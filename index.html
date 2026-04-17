@@ -1,91 +1,78 @@
-<!DOCTYPE html>
-
-<html lang="it"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>ana</title>
-
-<style>
-html,body{
-    margin:0;
-    padding:0;
-    background: ;
-}
-
-/* CONTENITORI VIDEO */
-.video-box{
-    position:fixed;
-    width:240px;
-    height:520px;
-    top:50%;
-    transform:translateY(-50%);
-    border-radius:14px;
-    border:2px solid #FFD700;
-    box-shadow:0 0 20px #FFD700,0 0 40px #FFD700;
-    overflow:hidden;
-    z-index:9999;
-}
-
-/* POSIZIONE */
-.video-left{left:10px;}
-.video-right{right:10px;}
-
-/* VIDEO */
-.video-box video{
-    width:100%;
-    height:100%;
-    object-fit:cover;
-    display:block;
-}
-
-/* TESTO */
-.video-text{
-    position:absolute;
-    bottom:8px;
-    left:0;
-    width:100%;
-    text-align:center;
-    color:#fff;
-    font-size:22px;
-    font-weight:bold;
-    text-shadow:0 0 8px #fff,0 0 15px #CF9FFF;
-    pointer-events:none;
-    animation:wave 3s ease-in-out infinite;
-}
-
-/* ANIMAZIONE ONDA */
-@keyframes wave{
-    0%{transform:translateY(0) rotate(0deg);}
-    25%{transform:translateY(-4px) rotate(-1deg);}
-    50%{transform:translateY(0) rotate(0deg);}
-    75%{transform:translateY(4px) rotate(1deg);}
-    100%{transform:translateY(0) rotate(0deg);}
-}
-</style>
+ </style>
 </head>
 
 <body>
 
-<!-- VIDEO SINISTRO -->
 <div class="video-box video-left">
-    <video autoplay="" loop="" muted="" playsinline="">
-        <source src="https://i.imgur.com/6FBqTsn.mp4" type="video/mp4">
+    <video id="player-left" autoplay loop muted playsinline>
+        <source id="source-left" src="" type="video/mp4">
     </video>
-    <div class="video-text">Radio Fleva</div>
+    <div id="text-left" class="video-text"></div>
 </div>
 
-<!-- VIDEO DESTRO -->
 <div class="video-box video-right">
-    <video autoplay="" loop="" muted="" playsinline="">
-        <source src="https://i.imgur.com/6FBqTsn.mp4" type="video/mp4">
+    <video id="player-right" autoplay loop muted playsinline>
+        <source id="source-right" src="" type="video/mp4">
     </video>
-    <div class="video-text">Radio Fleva</div>
+    <div id="text-right" class="video-text"></div>
 </div>
 
+<script>
+    // --- PLAYLIST CONFIGURATA ---
+    const playlist = [
+        { url: "https://i.imgur.com/U08g0br.mp4", label: "🎀𝒞𝒽𝓇𝒾𝓈𝓉𝒾𝓃𝒶🎀" },
+        { url: "https://i.imgur.com/4GKuW8H.mp4", label: "🎀𝒞𝒽𝓇𝒾𝓈𝓉𝒾𝓃𝒶🎀" },
+        { url: "https://i.imgur.com/Ik8d94F.mp4", label: "🎀𝒞𝒽𝓇𝒾𝓈𝓉𝒾𝓃𝒶🎀" },
+        { url: "https://i.imgur.com/6FBqTsn.mp4", label: "🎀𝒞𝒽𝓇𝒾𝓈𝓉𝒾𝓃𝒶🎀" }
+    ];
 
+    function updateVideos() {
+        const now = new Date();
+        const hours = now.getHours();
+        const minutes = now.getMinutes();
 
+        // Calcola lo slot di 10 minuti (esempio: dalle 14:00 alle 14:29 è uno slot)
+        const currentSlot = (hours * 2) + (minutes >= 10 ? 1 : 0);
+        
+        // Seleziona i video basandosi sullo slot temporale
+        // Sinistra: video corrente della lista
+        // Destra: video successivo della lista
+        const leftIndex = currentSlot % playlist.length;
+        const rightIndex = (currentSlot + 1) % playlist.length;
 
+        const leftVideo = playlist[leftIndex];
+        const rightVideo = playlist[rightIndex];
 
+        // Aggiorna Sinistra se il link è cambiato
+        const vLeft = document.getElementById('player-left');
+        const sLeft = document.getElementById('source-left');
+        if (sLeft.src !== leftVideo.url) {
+            sLeft.src = leftVideo.url;
+            document.getElementById('text-left').innerText = leftVideo.label;
+            vLeft.load();
+            vLeft.play();
+        }
+
+        // Aggiorna Destra se il link è cambiato
+        const vRight = document.getElementById('player-right');
+        const sRight = document.getElementById('source-right');
+        if (sRight.src !== rightVideo.url) {
+            sRight.src = rightVideo.url;
+            document.getElementById('text-right').innerText = rightVideo.label;
+            vRight.load();
+            vRight.play();
+        }
+    }
+
+    // Controlla ogni 30 secondi se è scattata la mezz'ora
+    setInterval(updateVideos, 30000);
+    
+    // Avvia subito
+    updateVideos();
+</script>
+
+</body>
+</html>
 
 </body></html>
 
@@ -143,5 +130,4 @@ html,body{
 </script>  
 
 </body></html>
-
 
